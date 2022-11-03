@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { getWords } from '../api/api';
 import { Test } from '../components/Test';
 import shuffle from '../helpers/helpers';
@@ -9,12 +9,8 @@ export default function Quiz() {
   const [page, setPage] = React.useState(0);
   const [startQuiz, setStartQuiz] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   getWords().then(res => setShuffleWords(shuffle(res))).finally(() => setStartQuiz(true))
-  // }, [startQuiz]);
-
   function start() {
-    getWords().then(res => setShuffleWords(shuffle(res))).then(() => setStartQuiz(true))
+    getWords().then(res => setShuffleWords(shuffle(res))).finally(() => setStartQuiz(true));
   }
 
   const handlerAnsver = () => {
@@ -22,15 +18,30 @@ export default function Quiz() {
   }
 
   return (
-    <View>
-      <Text>Перевірка слів</Text>
-      <Button
-        title='Start quiz'
-        onPress={() => start()}
-      />
-      <View>
-      {startQuiz && <Test word={shuffleWords[page]} setPage={handlerAnsver} />}
-      </View>
+    <View style={styles.view}>
+      {startQuiz
+        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} />
+        : <View style={styles.buttonStart}>
+            <Button
+              title='      Start quiz      '
+              onPress={() => start()}
+            />
+        </View>
+      }
     </View>
   )
-}
+};
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    padding: 10,
+    display: 'flex'
+  },
+  buttonStart: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    width: '60%',
+    marginTop: '80%'
+  }
+})

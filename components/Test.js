@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Text, View } from 'react-native';
+import { Button, Text, View, StyleSheet, TouchableHighlight } from 'react-native';
 import { postResult } from '../api/api';
 
-export default function Test({ word, setPage }) {
+export const Test = ({ word, setPage }) => {
   const [answer, setAnswer] = useState([]);
   const [radio, setRadio] = useState('');
 
@@ -12,8 +12,7 @@ export default function Test({ word, setPage }) {
       rightAnswer: radio === word.word
     }
 
-    setAnswer(state => ([...state, data]))
-    console.log(data, radio)
+    setAnswer(state => ([...state, data]));
   }
 
   const timeAnswer = new Date().toLocaleString();
@@ -27,45 +26,75 @@ export default function Test({ word, setPage }) {
   }
 
   return (
-    <View>
-      <Text>123</Text>
+    <View style={styles.view}>
       <View>
-        <Text>{`слово - ${word.translateWord}`}</Text>
-        <Text>{`${answer.length + 1}/10`}</Text>
+        <Text style={styles.textSubTitle}>{`${answer.length + 1}/10`}</Text>
+        <Text style={styles.textTitle}>{word.translateWord}</Text>
       </View>
-        <Text>Виберіть правильний переклад</Text>
-        <View>
+      <View style={styles.viewButtons}>
+        <View style={styles.viewButton}>
           <Button
             title={word.check1}
-            onClick={() => setRadio(word.check1)}
-          />
-          <Button
-            title={word.check2}
-            onClick={() => setRadio(word.check2)}
-          />
-          <Button
-            title={word.check3}
-            onClick={() => setRadio(word.check3)}
-          />
-          <Button
-            title={word.check4}
-            onClick={() => setRadio(word.check4)}
+            onPress={() => setRadio(word.check1)}
           />
         </View>
+        <View style={styles.viewButton}>
+          <Button
+            title={word.check2}
+            onPress={() => setRadio(word.check2)}
+          />
+        </View>
+        <View style={styles.viewButton}>
+          <Button
+            title={word.check3}
+            onPress={() => setRadio(word.check3)}
+          />
+        </View>
+        <View style={styles.viewButton}>
+          <Button
+            title={word.check4}
+            onPress={() => setRadio(word.check4)}
+          />
+        </View>
+      </View>
 
-        {answer.length === 10 && <Navigate replace to="/result" />}
-        <Button
-          disabled={radio === ''}
-          className="button is-info submit-button"
-          type="submit"
-          onClick={() => {
-            setPage();
-            addAnswer();
-            setRadio('')
-          }}
-        >
-          {answer.length !== 9 ? 'Відповісти' : 'Закінчити тест'}
-        </Button>
+      {answer.length === 10 && <Navigate replace to="/result" />}
+      <Button
+        disabled={radio === ''}
+        title={answer.length !== 9 ? 'Відповісти' : 'Закінчити тест'}
+        onPress={() => {
+          setPage();
+          addAnswer();
+          setRadio('')
+        }}
+      />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+  textTitle: {
+    fontWeight: 'bold',
+    fontSize: 30,
+    alignSelf: "center",
+    marginBottom: 30,
+  },
+  textSubTitle: {
+    alignSelf: 'flex-end',
+    marginRight: 30,
+  },
+  viewButtons: {
+    width: '100%',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 50,
+  },
+  viewButton: {
+    width: '45%',
+    marginBottom: 20,
+  }
+})
