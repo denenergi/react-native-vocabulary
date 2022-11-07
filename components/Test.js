@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Text, View, StyleSheet, TouchableHighlight } from 'react-native';
+import { Button, Text, View, StyleSheet } from 'react-native';
 import { postResult } from '../api/api';
 
-export const Test = ({ word, setPage }) => {
+export const Test = ({ word, setPage, navigation }) => {
   const [answer, setAnswer] = useState([]);
   const [radio, setRadio] = useState('');
 
@@ -22,7 +22,8 @@ export const Test = ({ word, setPage }) => {
       answers: answer,
       time: timeAnswer
     }
-    postResult(result)
+    postResult(result);
+    setAnswer([]);
   }
 
   return (
@@ -34,38 +35,42 @@ export const Test = ({ word, setPage }) => {
       <View style={styles.viewButtons}>
         <View style={styles.viewButton}>
           <Button
+            color={radio === word.check1 ? 'green' : 'blue'}
             title={word.check1}
             onPress={() => setRadio(word.check1)}
           />
         </View>
         <View style={styles.viewButton}>
           <Button
+            color={radio === word.check2 ? 'green' : 'blue'}
             title={word.check2}
             onPress={() => setRadio(word.check2)}
           />
         </View>
         <View style={styles.viewButton}>
           <Button
+            color={radio === word.check3 ? 'green' : 'blue'}
             title={word.check3}
             onPress={() => setRadio(word.check3)}
           />
         </View>
         <View style={styles.viewButton}>
           <Button
+            color={radio === word.check4 ? 'green' : 'blue'}
             title={word.check4}
             onPress={() => setRadio(word.check4)}
           />
         </View>
       </View>
-
-      {answer.length === 10 && <Navigate replace to="/result" />}
       <Button
+        color='blue'
         disabled={radio === ''}
         title={answer.length !== 9 ? 'Відповісти' : 'Закінчити тест'}
         onPress={() => {
           setPage();
           addAnswer();
-          setRadio('')
+          setRadio('');
+          {answer.length === 9 && navigation.navigate('Results')}
         }}
       />
     </View>

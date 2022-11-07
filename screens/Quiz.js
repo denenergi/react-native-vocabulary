@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet } from 'react-native';
 import { getWords } from '../api/api';
 import { Test } from '../components/Test';
 import shuffle from '../helpers/helpers';
 
-export default function Quiz() {
+export default function Quiz({ navigation }) {
   const [shuffleWords, setShuffleWords] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [startQuiz, setStartQuiz] = React.useState(false);
@@ -20,7 +20,7 @@ export default function Quiz() {
   return (
     <View style={styles.view}>
       {startQuiz
-        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} />
+        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} navigation={navigation}/>
         : <View style={styles.buttonStart}>
             <Button
               title='      Start quiz      '

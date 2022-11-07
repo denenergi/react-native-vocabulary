@@ -110,6 +110,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    paddingBottom: 10,
   },
   modalView: {
     marginTop: 55,
