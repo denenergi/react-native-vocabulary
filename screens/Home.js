@@ -80,7 +80,7 @@ export default function Home() {
       <View style={styles.view}>
         <View style={styles.viewName}>
           <Text style={styles.textName}>word</Text>
-          <Text>-</Text>
+          <Text> - </Text>
           <Text style={styles.textName}>translate</Text>
           <Text>
             &#128465;

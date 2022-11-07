@@ -1,45 +1,50 @@
 import React from 'react'
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { getResult } from '../api/api';
-import { Dropdown } from 'react-native-element-dropdown';
+import SelectList from 'react-native-dropdown-select-list'
 
 export default function Results() {
   const [results, setResults] = React.useState([]);
-  const [selected, setSelected] = React.useState();
-  const [value, setValue] = React.useState(null);
-  const [isFocus, setIsFocus] = React.useState(false);
+  const [selected, setSelected] = React.useState('');
+  const [result, setResult] = React.useState([]);
 
   React.useEffect(() => {
     getResult().then(res => setResults(res))
   }, []);
 
+  React.useEffect(() => {
+    const res = results.find(el => el.time === selected);
+
+    if (selected !== '') {
+      setResult(res.answers);
+    }
+  }, [selected]);
+
+  console.log(results)
+
   return (
+
     <View>
-      <Text>Результат</Text>
-      {/* <View>
-        {!!selected && (
-          <Text>
-            Selected: label = {selected.id} and value = {selected.id}
-          </Text>
-        )}
-        {results.length > 0 && 
-        <Dropdown data={results}/>} */}
-        {/* <select value={chooseAnswer} onChange={event => setChooseAnswer(event.target.value)} >
-          <option>Історія перевірок</option>
-          {answers.length > 0 &&
-            (answers.map(answer => (
-              <option key={answer.time} value={answer.time} >
-                {answer.time}
-              </option>
-            ))
-            )
-          }
-        </select> */}
-      {/* </View> */}
-      {/* {showAnser !== null && <ResultItem answer={showAnser} />} */}
-
+      <View style={styles.view}>
+        <SelectList
+          setSelected={setSelected}
+          data={results.map(el => el.time)}
+          placeholder={'Select the result'}
+          search={false}
+        />
+      </View>
+      {/* {result.l}
+      <FileList 
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        extraData={selectedId} /> */}
     </View>
-
-
   )
-}
+};
+
+const styles = StyleSheet.create({
+  view: {
+    padding: 20,
+  },
+});
