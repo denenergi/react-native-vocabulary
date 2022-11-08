@@ -17,10 +17,15 @@ export default function Quiz({ navigation }) {
     setPage(state => state + 1)
   }
 
+  const zeroing = () => {
+    setPage(0);
+    setStartQuiz(false);
+  }
+
   return (
     <View style={styles.view}>
       {startQuiz
-        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} navigation={navigation}/>
+        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} navigation={navigation} zeroing={zeroing}/>
         : <View style={styles.buttonStart}>
             <Button
               title='      Start quiz      '

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Text, View, StyleSheet } from 'react-native';
 import { postResult } from '../api/api';
 
-export const Test = ({ word, setPage, navigation }) => {
+export const Test = ({ word, setPage, navigation, zeroing }) => {
   const [answer, setAnswer] = useState([]);
   const [radio, setRadio] = useState('');
 
@@ -17,13 +17,16 @@ export const Test = ({ word, setPage, navigation }) => {
 
   const timeAnswer = new Date().toLocaleString();
 
-  if (answer.length === 10) {
-    const result = {
-      answers: answer,
-      time: timeAnswer
-    }
-    postResult(result);
-    setAnswer([]);
+  const postAnswers = () => {
+    addAnswer();
+
+      const result = {
+        answers: answer,
+        time: timeAnswer
+      };
+
+      postResult(result);
+      setAnswer([]);
   }
 
   return (
@@ -62,17 +65,30 @@ export const Test = ({ word, setPage, navigation }) => {
           />
         </View>
       </View>
-      <Button
-        color='blue'
-        disabled={radio === ''}
-        title={answer.length !== 9 ? 'Відповісти' : 'Закінчити тест'}
-        onPress={() => {
-          setPage();
-          addAnswer();
-          setRadio('');
-          {answer.length === 9 && navigation.navigate('Results')}
-        }}
-      />
+      {answer.length !== 9
+        ? <Button
+            color='blue'
+            disabled={radio === ''}
+            title='Відповісти'
+            onPress={() => {
+              setPage();
+              addAnswer();
+              setRadio('');
+            }}
+        />
+        : <Button
+            color='blue'
+            disabled={radio === ''}
+            title='Закінчити тест'
+            onPress={() => {
+              postAnswers();
+              setPage();
+              setRadio('');
+              navigation.navigate('Results');
+              zeroing();
+            }}
+        />
+      }
     </View>
   )
 }
