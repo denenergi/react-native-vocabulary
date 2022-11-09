@@ -42,7 +42,7 @@ export const Test = ({ word, setPage, navigation, zeroing, startQuiz }) => {
   }
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {isLoading
         ? <ActivityIndicator size="large" />
         : <View style={styles.view}>
