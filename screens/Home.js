@@ -24,7 +24,7 @@ export default function Home() {
   }, []);
 
   const addWord = () => {
-    newWord = {
+    const newWord = {
       word: inputWord,
       translateWord: inputTranslate
     }

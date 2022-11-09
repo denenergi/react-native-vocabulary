@@ -1,10 +1,21 @@
-import React, { useState } from 'react'
-import { Button, Text, View, StyleSheet } from 'react-native';
+import React from 'react';
+import { Button, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { postResult } from '../api/api';
 
-export const Test = ({ word, setPage, navigation, zeroing }) => {
-  const [answer, setAnswer] = useState([]);
-  const [radio, setRadio] = useState('');
+export const Test = ({ word, setPage, navigation, zeroing, startQuiz }) => {
+  const [answer, setAnswer] = React.useState([]);
+  const [radio, setRadio] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  React.useEffect(() => {
+    setAnswer([]);
+  }, [startQuiz])
+
+  React.useEffect(() => {
+    if (answer.length  === 10) {
+      setIsLoading(true);
+    }
+  }, [answer])
 
   const addAnswer = () => {
     const data = {
@@ -18,77 +29,69 @@ export const Test = ({ word, setPage, navigation, zeroing }) => {
   const timeAnswer = new Date().toLocaleString();
 
   const postAnswers = () => {
-    addAnswer();
+    const result = {
+      answers: answer,
+      time: timeAnswer
+    };
 
-      const result = {
-        answers: answer,
-        time: timeAnswer
-      };
+    postResult(result)
+      .then(() => zeroing())
+      .then(() => navigation.navigate('Results', { answer: answer }))
+      .finally(() => setIsLoading(false));
 
-      postResult(result);
-      setAnswer([]);
   }
 
   return (
-    <View style={styles.view}>
-      <View>
-        <Text style={styles.textSubTitle}>{`${answer.length + 1}/10`}</Text>
-        <Text style={styles.textTitle}>{word.translateWord}</Text>
-      </View>
-      <View style={styles.viewButtons}>
-        <View style={styles.viewButton}>
+    <View>
+      {isLoading
+        ? <ActivityIndicator size="large" />
+        : <View style={styles.view}>
+          <View>
+            <Text style={styles.textSubTitle}>{`${answer.length + 1}/10`}</Text>
+            <Text style={styles.textTitle}>{word.translateWord}</Text>
+          </View>
+          <View style={styles.viewButtons}>
+            <View style={styles.viewButton}>
+              <Button
+                color={radio === word.check1 ? 'green' : 'blue'}
+                title={word.check1}
+                onPress={() => setRadio(word.check1)}
+              />
+            </View>
+            <View style={styles.viewButton}>
+              <Button
+                color={radio === word.check2 ? 'green' : 'blue'}
+                title={word.check2}
+                onPress={() => setRadio(word.check2)}
+              />
+            </View>
+            <View style={styles.viewButton}>
+              <Button
+                color={radio === word.check3 ? 'green' : 'blue'}
+                title={word.check3}
+                onPress={() => setRadio(word.check3)}
+              />
+            </View>
+            <View style={styles.viewButton}>
+              <Button
+                color={radio === word.check4 ? 'green' : 'blue'}
+                title={word.check4}
+                onPress={() => setRadio(word.check4)}
+              />
+            </View>
+          </View>
           <Button
-            color={radio === word.check1 ? 'green' : 'blue'}
-            title={word.check1}
-            onPress={() => setRadio(word.check1)}
-          />
-        </View>
-        <View style={styles.viewButton}>
-          <Button
-            color={radio === word.check2 ? 'green' : 'blue'}
-            title={word.check2}
-            onPress={() => setRadio(word.check2)}
-          />
-        </View>
-        <View style={styles.viewButton}>
-          <Button
-            color={radio === word.check3 ? 'green' : 'blue'}
-            title={word.check3}
-            onPress={() => setRadio(word.check3)}
-          />
-        </View>
-        <View style={styles.viewButton}>
-          <Button
-            color={radio === word.check4 ? 'green' : 'blue'}
-            title={word.check4}
-            onPress={() => setRadio(word.check4)}
-          />
-        </View>
-      </View>
-      {answer.length !== 9
-        ? <Button
             color='blue'
             disabled={radio === ''}
-            title='Відповісти'
+            title={answer.length === 9 ? 'Закінчити тест' : 'Відповісти'}
             onPress={() => {
               setPage();
               addAnswer();
               setRadio('');
+              { answer.length === 9 && postAnswers() }
             }}
-        />
-        : <Button
-            color='blue'
-            disabled={radio === ''}
-            title='Закінчити тест'
-            onPress={() => {
-              postAnswers();
-              setPage();
-              setRadio('');
-              navigation.navigate('Results');
-              zeroing();
-            }}
-        />
-      }
+          />
+        </View>}
     </View>
   )
 }

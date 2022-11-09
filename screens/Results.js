@@ -3,17 +3,27 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { getResult } from '../api/api';
 import SelectList from 'react-native-dropdown-select-list'
 
-export default function Results() {
+export default function Results({ route }) {
   const [results, setResults] = React.useState([]);
   const [selected, setSelected] = React.useState('');
-  const [result, setResult] = React.useState([]);
-  const [errorMesage, setErrorMesage] = React.useState();
+  const [result, setResult] = React.useState();
+  const [setErrorMesage] = React.useState();
+  const [refreshing, setRefreshing] = React.useState(false);
+  const params = route.params;
 
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     getResult().then(res => setResults(res)).catch(error => setErrorMesage(error));
-  //   }, 300)
-  // }, []);
+  React.useEffect(() => {
+    if(typeof route.params == 'object') {
+      setResult(params?.answer);
+    }
+  }, [params]);
+
+  React.useEffect(() => {
+    onRefresh();
+  }, [result])
+
+  React.useEffect(() => {
+    getResult().then(res => setResults(res)).catch(error => setErrorMesage(error));
+  }, []);
 
   React.useEffect(() => {
     const res = results.find(el => el.time === selected);
@@ -23,9 +33,10 @@ export default function Results() {
     }
   }, [selected]);
 
-  const z = () => {
-    return getResult().then(res => setResults(res)).catch(error => setErrorMesage(error))
-  }
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getResult().then(res => setResults(res)).then(() => setRefreshing(false));
+  }, []);
 
   return (
 
@@ -36,10 +47,9 @@ export default function Results() {
           data={results.map(el => el.time)}
           placeholder={'Select the result'}
           search={false}
-          onPress={() => z()}
         />
       </View>
-      {result.length > 0 &&
+      {result?.length > 0 &&
         <FlatList
           data={result}
           renderItem={({ item }) => (

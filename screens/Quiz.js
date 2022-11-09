@@ -25,7 +25,7 @@ export default function Quiz({ navigation }) {
   return (
     <View style={styles.view}>
       {startQuiz
-        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} navigation={navigation} zeroing={zeroing}/>
+        ? <Test word={shuffleWords[page]} setPage={handlerAnsver} navigation={navigation} zeroing={zeroing} startQuiz={startQuiz}/>
         : <View style={styles.buttonStart}>
             <Button
               title='      Start quiz      '
